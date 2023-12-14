@@ -1,4 +1,5 @@
 import 'package:agent_x/domain/entities/agent.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
@@ -49,8 +50,8 @@ class DetailScreen extends StatelessWidget {
                 Hero(
                   tag: agent.name,
                   child: Center(
-                    child: Image.network(
-                      agent.fullPortrait,
+                    child: CachedNetworkImage(
+                      imageUrl: agent.fullPortrait,
                     ),
                   ),
                 ),
@@ -74,8 +75,8 @@ class DetailScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 8.0),
-                    Image.network(
-                      agent.roleDisplayIcon,
+                    CachedNetworkImage(
+                      imageUrl: agent.roleDisplayIcon,
                       height: 24.0,
                     ),
                   ],
@@ -112,7 +113,7 @@ class DetailScreen extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 8.0),
-                          AgentDetailWidget(ability: agentPassive!),
+                          AgentDetailWidget(ability: agentPassive),
                         ],
                       ),
                     const SizedBox(height: 24.0),

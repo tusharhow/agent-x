@@ -2,6 +2,7 @@ import 'package:agent_x/blocs/agent_bloc/agent_bloc.dart';
 import 'package:agent_x/blocs/agent_selection_bloc/agent_selection_bloc.dart';
 import 'package:agent_x/presentation/screens/detail_screen.dart';
 import 'package:agent_x/presentation/widgets/navigate.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -49,7 +50,7 @@ class AgentScreen extends StatelessWidget {
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
                                 image: DecorationImage(
-                                  image: NetworkImage(
+                                  image: CachedNetworkImageProvider(
                                     state.agents[index].background,
                                   ),
                                   scale: 2.5,
@@ -65,25 +66,52 @@ class AgentScreen extends StatelessWidget {
                                   end: Alignment.bottomCenter,
                                 ),
                               ),
-                              child: GestureDetector(
-                                onTap: () {
-                                  push(
-                                    context: context,
-                                    widget: DetailScreen(
-                                      agent: state.agents[state.selectedIndex],
-                                    ),
-                                  );
-                                },
-                                child: Hero(
-                                  tag: state.agents[state.selectedIndex].name,
-                                  child: Image.network(
-                                    state.agents[state.selectedIndex]
-                                        .fullPortrait,
-                                    height: 580.0,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
+                              child: AnimatedBuilder(
+                                  animation: pageController,
+                                  builder: (context, child) {
+                                    double rotation = 0.0;
+                                    if (pageController
+                                            .position.haveDimensions &&
+                                        pageController.position
+                                            .isScrollingNotifier.value) {
+                                      // Calculate the rotation based on the difference between the current page and the index
+                                      rotation = -pageController.page! + index;
+
+                                      // If the difference is less than 0.5, add a transition to the next agent
+                                      if ((index - pageController.page!).abs() <
+                                          0.5) {
+                                        rotation = (rotation) *
+                                            1.5; // Apply a transition effect
+                                      }
+                                    }
+                                    return Transform(
+                                      alignment: Alignment.center,
+                                      transform: Matrix4.identity()
+                                        ..setEntry(3, 2, 0.001)
+                                        ..rotateY(rotation),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          push(
+                                            context: context,
+                                            widget: DetailScreen(
+                                              agent: state
+                                                  .agents[state.selectedIndex],
+                                            ),
+                                          );
+                                        },
+                                        child: Hero(
+                                          tag: state
+                                              .agents[state.selectedIndex].name,
+                                          child: CachedNetworkImage(
+                                           imageUrl: state.agents[state.selectedIndex]
+                                                .fullPortrait,
+                                            height: 580.0,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }),
                             );
                           },
                         );
@@ -122,6 +150,9 @@ class AgentScreen extends StatelessWidget {
                                   onTap: () {
                                     pageController.jumpToPage(
                                       index,
+                                      // duration:
+                                      //     const Duration(milliseconds: 600),
+                                      // curve: Curves.easeInBack,
                                     );
                                     // setState(() {
                                     // });
@@ -142,7 +173,7 @@ class AgentScreen extends StatelessWidget {
                                         width: 2.0,
                                       ),
                                       image: DecorationImage(
-                                        image: NetworkImage(
+                                        image: CachedNetworkImageProvider(
                                           state.agents[index].displayIcon,
                                         ),
                                         opacity: state.selectedIndex == index
