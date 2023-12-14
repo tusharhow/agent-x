@@ -1,6 +1,7 @@
 import 'package:agent_x/domain/entities/agent.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 class DetailScreen extends StatelessWidget {
@@ -47,11 +48,20 @@ class DetailScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Hero(
-                  tag: agent.name,
-                  child: Center(
-                    child: CachedNetworkImage(
-                      imageUrl: agent.fullPortrait,
+                GestureDetector(
+                  // when user drag down, pop the screen
+                  onVerticalDragUpdate: (details) {
+                    if (details.primaryDelta! > 20) {
+                      Navigator.pop(context);
+                    }
+                  },
+
+                  child: Hero(
+                    tag: agent.name,
+                    child: Center(
+                      child: CachedNetworkImage(
+                        imageUrl: agent.fullPortrait,
+                      ),
                     ),
                   ),
                 ),
