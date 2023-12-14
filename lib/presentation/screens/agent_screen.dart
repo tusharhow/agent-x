@@ -60,9 +60,11 @@ class AgentScreen extends StatelessWidget {
                                   colors: state
                                       .agents[index].backgroundGradientColors
                                       .map((color) =>
-                                          Color(int.parse(color, radix: 16)))
+                                          Color(int.parse(color, radix: 16))
+                                              .withOpacity(0.5))
                                       .toList(),
                                   begin: Alignment.topCenter,
+                                  transform: const GradientRotation(0.2),
                                   end: Alignment.bottomCenter,
                                 ),
                               ),
@@ -99,12 +101,27 @@ class AgentScreen extends StatelessWidget {
                                             ),
                                           );
                                         },
+                                        onVerticalDragUpdate: (_) {
+                                          // when user drag up or tap, push the screen
+
+                                          if (_.primaryDelta! < -20) {
+                                            push(
+                                              context: context,
+                                              widget: DetailScreen(
+                                                agent: state.agents[
+                                                    state.selectedIndex],
+                                              ),
+                                            );
+                                          }
+                                        },
                                         child: Hero(
                                           tag: state
                                               .agents[state.selectedIndex].name,
-                                          child: CachedNetworkImage(
-                                           imageUrl: state.agents[state.selectedIndex]
-                                                .fullPortrait,
+                                          child: Image(
+                                            image: CachedNetworkImageProvider(
+                                                state
+                                                    .agents[state.selectedIndex]
+                                                    .fullPortrait),
                                             height: 580.0,
                                             fit: BoxFit.cover,
                                           ),
@@ -121,14 +138,37 @@ class AgentScreen extends StatelessWidget {
                       builder: (context, state) {
                         return Positioned(
                           top: 80.0,
-                          child: Text(
-                            state.agents[state.selectedIndex].name,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 40.0,
-                              fontFamily: 'Valorant',
-                              fontWeight: FontWeight.bold,
-                            ),
+                          child: Column(
+                            children: [
+                              Text(
+                                state.agents[state.selectedIndex].name,
+                                style: const TextStyle(
+                                  color: Colors.black54,
+                                  fontSize: 40.0,
+                                  fontFamily: 'Valorant',
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  CachedNetworkImage(
+                                    imageUrl: state.agents[state.selectedIndex]
+                                        .roleDisplayIcon,
+                                    color: Colors.black54,
+                                    height: 12.0,
+                                  ),
+                                  const SizedBox(width: 8.0),
+                                  Text(
+                                    state.agents[state.selectedIndex].role,
+                                    style: const TextStyle(
+                                      color: Colors.black45,
+                                      fontSize: 14.0,
+                                      fontFamily: 'Valorant',
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         );
                       },
@@ -190,133 +230,7 @@ class AgentScreen extends StatelessWidget {
                       },
                     ),
                   ],
-                )
-
-                // Stack(
-                //   alignment: Alignment.center,
-                //   children: [
-                //     BlocBuilder<AgentSelectionBloc, AgentSelectionState>(
-                //       builder: (context, state) {
-                //         return AnimatedContainer(
-                //           duration: const Duration(milliseconds: 400),
-                //           curve: Curves.ease,
-                //           alignment: Alignment.center,
-                //           decoration: BoxDecoration(
-                //             image: DecorationImage(
-                //               image: NetworkImage(
-                //                 state.agents[state.selectedIndex].background,
-                //               ),
-                //               scale: 2.5,
-                //               opacity: 0.5,
-                //             ),
-                //             gradient: LinearGradient(
-                //               colors: state.agents[state.selectedIndex]
-                //                   .backgroundGradientColors
-                //                   .map((color) =>
-                //                       Color(int.parse(color, radix: 16)))
-                //                   .toList(),
-                //               begin: Alignment.topCenter,
-                //               end: Alignment.bottomCenter,
-                //             ),
-                //           ),
-                //           child: BlocBuilder<AgentSelectionBloc,
-                //               AgentSelectionState>(
-                //             builder: (context, state) {
-                //               return AnimatedContainer(
-                //                 duration: const Duration(milliseconds: 400),
-                //                 curve: Curves.ease,
-                //                 child: GestureDetector(
-                //                   onTap: () {
-                //                     push(
-                //                       context: context,
-                //                       widget: DetailScreen(
-                //                         agent: state.agents[state.selectedIndex],
-                //                       ),
-                //                     );
-                //                   },
-                //                   child: Hero(
-                //                     tag: state.agents[state.selectedIndex].name,
-                //                     child: Image.network(
-                //                       state.agents[state.selectedIndex]
-                //                           .fullPortrait,
-                //                       height: 580.0,
-                //                       fit: BoxFit.cover,
-                //                     ),
-                //                   ),
-                //                 ),
-                //               );
-                //             },
-                //           ),
-                //         );
-                //       },
-                //     ),
-                //     BlocBuilder<AgentSelectionBloc, AgentSelectionState>(
-                //       builder: (context, state) {
-                //         return Positioned(
-                //           top: 80.0,
-                //           child: Text(
-                //             state.agents[state.selectedIndex].name,
-                //             style: const TextStyle(
-                //               color: Colors.white,
-                //               fontSize: 40.0,
-                //               fontFamily: 'Valorant',
-                //               fontWeight: FontWeight.bold,
-                //             ),
-                //           ),
-                //         );
-                //       },
-                //     ),
-                //     BlocBuilder<AgentSelectionBloc, AgentSelectionState>(
-                //       builder: (context, state) {
-                //         return Positioned(
-                //           bottom: 0.0,
-                //           child: SizedBox(
-                //             width: MediaQuery.of(context).size.width,
-                //             height: 100.0,
-                //             child: ListView.builder(
-                //               scrollDirection: Axis.horizontal,
-                //               itemCount: state.agents.length,
-                //               physics: const BouncingScrollPhysics(),
-                //               itemBuilder: (context, index) {
-                //                 return GestureDetector(
-                //                   onTap: () {
-                //                     context
-                //                         .read<AgentSelectionBloc>()
-                //                         .add(AgentSelectionEvent(index));
-                //                   },
-                //                   child: AnimatedContainer(
-                //                     duration: const Duration(milliseconds: 400),
-                //                     curve: Curves.ease,
-                //                     margin: const EdgeInsets.all(8.0),
-                //                     width: 90.0,
-                //                     decoration: BoxDecoration(
-                //                       border: Border.all(
-                //                         color: state.selectedIndex == index
-                //                             ? Colors.red
-                //                             : Colors.transparent,
-                //                         width: 2.0,
-                //                       ),
-                //                       image: DecorationImage(
-                //                         image: NetworkImage(
-                //                           state.agents[index].displayIcon,
-                //                         ),
-                //                         opacity: state.selectedIndex == index
-                //                             ? 1.0
-                //                             : 0.5,
-                //                       ),
-                //                     ),
-                //                   ),
-                //                 );
-                //               },
-                //             ),
-                //           ),
-                //         );
-                //       },
-                //     ),
-                //   ],
-                // ),
-
-                );
+                ));
           } else {
             return const Center(
               child: Text('No agents found'),
