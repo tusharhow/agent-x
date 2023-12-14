@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
               create: (context) => AgentSelectionBloc(
                   agents: agentUseCase.getAgents() as List<Agent>)),
         ],
-        child: AgentScreen(),
+        child: const AgentScreen(),
       ),
     );
   }
