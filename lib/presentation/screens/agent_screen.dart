@@ -10,6 +10,8 @@ class AgentScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var scrollController = ScrollController();
+    final PageController pageController = PageController();
     return Scaffold(
       body: BlocBuilder<AgentBloc, AgentState>(
         builder: (context, state) {
@@ -29,13 +31,16 @@ class AgentScreen extends StatelessWidget {
                       builder: (context, state) {
                         return PageView.builder(
                           itemCount: state.agents.length,
-                          controller:
-                              PageController(initialPage: state.selectedIndex),
+                          controller: pageController,
                           onPageChanged: (index) {
-                            state.selectedIndex = index;
+                            scrollController.animateTo(
+                              index * 100.0, // Adjust the item width as needed
+                              duration: const Duration(milliseconds: 400),
+                              curve: Curves.ease,
+                            );
                             context
                                 .read<AgentSelectionBloc>()
-                                .add(AgentSelectionEvent(state.selectedIndex));
+                                .add(AgentSelectionEvent(index));
                           },
                           itemBuilder: (context, index) {
                             return AnimatedContainer(
@@ -45,15 +50,14 @@ class AgentScreen extends StatelessWidget {
                               decoration: BoxDecoration(
                                 image: DecorationImage(
                                   image: NetworkImage(
-                                    state
-                                        .agents[state.selectedIndex].background,
+                                    state.agents[index].background,
                                   ),
                                   scale: 2.5,
                                   opacity: 0.5,
                                 ),
                                 gradient: LinearGradient(
-                                  colors: state.agents[state.selectedIndex]
-                                      .backgroundGradientColors
+                                  colors: state
+                                      .agents[index].backgroundGradientColors
                                       .map((color) =>
                                           Color(int.parse(color, radix: 16)))
                                       .toList(),
@@ -110,11 +114,17 @@ class AgentScreen extends StatelessWidget {
                             height: 100.0,
                             child: ListView.builder(
                               scrollDirection: Axis.horizontal,
+                              controller: scrollController,
                               itemCount: state.agents.length,
                               physics: const BouncingScrollPhysics(),
                               itemBuilder: (context, index) {
                                 return GestureDetector(
                                   onTap: () {
+                                    pageController.jumpToPage(
+                                      index,
+                                    );
+                                    // setState(() {
+                                    // });
                                     context
                                         .read<AgentSelectionBloc>()
                                         .add(AgentSelectionEvent(index));
