@@ -82,48 +82,46 @@ class DetailScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 8.0),
-              const ListTile(
-                leading: Icon(Icons.cloud),
-                title: Text('Cloudburst'),
-                subtitle: Text(
-                    'Throw out a cloud of smoke that obscures vision on impact.'),
-              ),
-              const ListTile(
-                leading: Icon(Icons.arrow_upward),
-                title: Text('Updraft'),
-                subtitle: Text(
-                    'Propel yourself upwards, allowing you to reach higher positions.'),
-              ),
-              const ListTile(
-                leading: Icon(Icons.directions_run),
-                title: Text('Tailwind'),
-                subtitle: Text(
-                    'Dash a short distance in the direction you are moving.'),
-              ),
-              const ListTile(
-                leading: Icon(Icons.flash_on),
-                title: Text('Blade Storm (Ultimate)'),
-                subtitle: Text(
-                    'Arm yourself with several deadly throwing knives that deal moderate damage and kill on headshots.'),
-              ),
+              for (int i = 0; i < agent.abilities.length - 1; i++)
+                AgentDetailWidget(
+                  ability: agent.abilities[i],
+                ),
               const SizedBox(height: 24.0),
               const Text(
-                'Signature Ability:',
+                'Ultimate:',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               const SizedBox(height: 8.0),
-              const ListTile(
-                leading: Icon(Icons.cloud),
-                title: Text('Cloudburst'),
-                subtitle: Text(
-                    'Throw out a cloud of smoke that obscures vision on impact.'),
-              ),
+              AgentDetailWidget(ability: agent.abilities.last)
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class AgentDetailWidget extends StatelessWidget {
+  const AgentDetailWidget({
+    super.key,
+    required this.ability,
+  });
+
+  final Ability ability;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Image.network(
+        ability.displayIcon,
+      ),
+      title: Text(ability.displayName),
+      subtitle: Text(
+        ability.description.replaceFirst(RegExp(r'^.*?[.!?]\s'), ''),
+        textAlign: TextAlign.justify,
       ),
     );
   }
