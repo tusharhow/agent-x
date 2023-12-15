@@ -155,25 +155,32 @@ class AgentScreen extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              Row(
-                                children: [
-                                  CachedNetworkImage(
-                                    imageUrl: state
-                                        .agents[state.selectedIndex]
-                                        .roleDisplayIcon,
-                                    color: Colors.black54,
-                                    height: 12.0,
+                              Hero(
+                                tag:
+                                    '${state.agents[state.selectedIndex].name}role',
+                                child: Material(
+                                  color: Colors.transparent,
+                                  child: Row(
+                                    children: [
+                                      CachedNetworkImage(
+                                        imageUrl: state
+                                            .agents[state.selectedIndex]
+                                            .roleDisplayIcon,
+                                        color: Colors.black54,
+                                        height: 12.0,
+                                      ),
+                                      const SizedBox(width: 8.0),
+                                      Text(
+                                        state.agents[state.selectedIndex].role,
+                                        style: const TextStyle(
+                                          color: Colors.black45,
+                                          fontSize: 14.0,
+                                          fontFamily: 'Valorant',
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  const SizedBox(width: 8.0),
-                                  Text(
-                                    state.agents[state.selectedIndex].role,
-                                    style: const TextStyle(
-                                      color: Colors.black45,
-                                      fontSize: 14.0,
-                                      fontFamily: 'Valorant',
-                                    ),
-                                  ),
-                                ],
+                                ),
                               ),
                             ],
                           ),

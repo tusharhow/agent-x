@@ -83,24 +83,30 @@ class DetailScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 8.0),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CachedNetworkImage(
-                      imageUrl: agent.roleDisplayIcon,
-                      color: Colors.black54,
-                      height: 12.0,
+                Hero(
+                  tag: '${agent.name}role',
+                  child: Material(
+                    color: Colors.transparent,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CachedNetworkImage(
+                          imageUrl: agent.roleDisplayIcon,
+                          color: Colors.black54,
+                          height: 12.0,
+                        ),
+                        const SizedBox(width: 8.0),
+                        Text(
+                          agent.role,
+                          style: const TextStyle(
+                            color: Colors.black45,
+                            fontSize: 10.0,
+                            fontFamily: 'Valorant',
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 8.0),
-                    Text(
-                      agent.role,
-                      style: const TextStyle(
-                        color: Colors.black45,
-                        fontSize: 10.0,
-                        fontFamily: 'Valorant',
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
                 const SizedBox(height: 24.0),
                 Column(
@@ -134,11 +140,7 @@ class DetailScreen extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 8.0),
-                          AgentDetailWidget(
-                              ability: agentPassive,
-                              backgroundColor: Color(int.parse(
-                                  agent.backgroundGradientColors[0],
-                                  radix: 16))),
+                          AgentDetailWidget(ability: agentPassive),
                         ],
                       ),
                     const SizedBox(height: 24.0),
@@ -152,9 +154,6 @@ class DetailScreen extends StatelessWidget {
                     const SizedBox(height: 8.0),
                     for (int i = 0; i < agentAbilities.length; i++)
                       AgentDetailWidget(
-                        backgroundColor: Color(int.parse(
-                            agent.backgroundGradientColors[0],
-                            radix: 16)),
                         ability: agentAbilities[i],
                       ),
                     const SizedBox(height: 24.0),
@@ -166,12 +165,7 @@ class DetailScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 8.0),
-                    AgentDetailWidget(
-                      ability: agentUltimate,
-                      backgroundColor: Color(int.parse(
-                          agent.backgroundGradientColors[0],
-                          radix: 16)),
-                    ),
+                    AgentDetailWidget(ability: agentUltimate),
                   ],
                 )
               ],
@@ -184,12 +178,9 @@ class DetailScreen extends StatelessWidget {
 }
 
 class AgentDetailWidget extends StatelessWidget {
-  final Color backgroundColor;
-
   const AgentDetailWidget({
     super.key,
     required this.ability,
-    required this.backgroundColor,
   });
 
   final Ability ability;
@@ -199,7 +190,6 @@ class AgentDetailWidget extends StatelessWidget {
     return ListTile(
       leading: CachedNetworkImage(
         imageUrl: ability.displayIcon,
-        color: backgroundColor,
       ),
       title: Text(ability.displayName),
       subtitle: Text(
