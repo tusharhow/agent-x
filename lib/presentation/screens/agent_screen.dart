@@ -140,19 +140,26 @@ class AgentScreen extends StatelessWidget {
                           top: 80.0,
                           child: Column(
                             children: [
-                              Text(
-                                state.agents[state.selectedIndex].name,
-                                style: const TextStyle(
-                                  color: Colors.black54,
-                                  fontSize: 40.0,
-                                  fontFamily: 'Valorant',
-                                  fontWeight: FontWeight.bold,
+                              Hero(
+                                tag:
+                                    '${state.agents[state.selectedIndex].name}name',
+                                child: Material(
+                                  color: Colors.transparent,
+                                  child: Text(
+                                    state.agents[state.selectedIndex].name,
+                                    style: const TextStyle(
+                                      fontSize: 40.0,
+                                      fontFamily: 'Valorant',
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
                                 ),
                               ),
                               Row(
                                 children: [
                                   CachedNetworkImage(
-                                    imageUrl: state.agents[state.selectedIndex]
+                                    imageUrl: state
+                                        .agents[state.selectedIndex]
                                         .roleDisplayIcon,
                                     color: Colors.black54,
                                     height: 12.0,
@@ -206,12 +213,32 @@ class AgentScreen extends StatelessWidget {
                                     margin: const EdgeInsets.all(8.0),
                                     width: 90.0,
                                     decoration: BoxDecoration(
-                                      border: Border.all(
-                                        color: state.selectedIndex == index
-                                            ? Colors.red
-                                            : Colors.transparent,
-                                        width: 2.0,
-                                      ),
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      // color: state.selectedIndex == index
+                                      //     ? Colors.white70
+                                      //     : Colors.transparent,
+                                      gradient: state.selectedIndex == index
+                                          ? LinearGradient(
+                                              colors: state.agents[index]
+                                                  .backgroundGradientColors
+                                                  .map((color) => Color(
+                                                          int.parse(color,
+                                                              radix: 16))
+                                                      .withOpacity(0.5))
+                                                  .toList(),
+                                            )
+                                          : null,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.blueGrey.withOpacity(
+                                              state.selectedIndex == index
+                                                  ? 0.5
+                                                  : 0),
+                                          blurRadius: 10.0,
+                                          offset: const Offset(0.0, 4.0),
+                                        ),
+                                      ],
+                                      // : null,
                                       image: DecorationImage(
                                         image: CachedNetworkImageProvider(
                                           state.agents[index].displayIcon,

@@ -66,28 +66,39 @@ class DetailScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16.0),
-                Text(
-                  agent.name,
-                  style: const TextStyle(
-                    fontSize: 26,
-                    fontFamily: 'Valorant',
-                    fontWeight: FontWeight.bold,
+                Hero(
+                  tag: '${agent.name}name',
+                  child: Material(
+                    color: Colors.transparent,
+                    child: Center(
+                      child: Text(
+                        agent.name,
+                        style: const TextStyle(
+                          fontSize: 26,
+                          fontFamily: 'Valorant',
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 8.0),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    CachedNetworkImage(
+                      imageUrl: agent.roleDisplayIcon,
+                      color: Colors.black54,
+                      height: 12.0,
+                    ),
+                    const SizedBox(width: 8.0),
                     Text(
                       agent.role,
                       style: const TextStyle(
-                        fontSize: 16,
-                        color: Colors.black,
+                        color: Colors.black45,
+                        fontSize: 10.0,
+                        fontFamily: 'Valorant',
                       ),
-                    ),
-                    const SizedBox(width: 8.0),
-                    CachedNetworkImage(
-                      imageUrl: agent.roleDisplayIcon,
-                      height: 24.0,
                     ),
                   ],
                 ),
@@ -123,7 +134,11 @@ class DetailScreen extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 8.0),
-                          AgentDetailWidget(ability: agentPassive),
+                          AgentDetailWidget(
+                              ability: agentPassive,
+                              backgroundColor: Color(int.parse(
+                                  agent.backgroundGradientColors[0],
+                                  radix: 16))),
                         ],
                       ),
                     const SizedBox(height: 24.0),
@@ -137,6 +152,9 @@ class DetailScreen extends StatelessWidget {
                     const SizedBox(height: 8.0),
                     for (int i = 0; i < agentAbilities.length; i++)
                       AgentDetailWidget(
+                        backgroundColor: Color(int.parse(
+                            agent.backgroundGradientColors[0],
+                            radix: 16)),
                         ability: agentAbilities[i],
                       ),
                     const SizedBox(height: 24.0),
@@ -148,7 +166,12 @@ class DetailScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 8.0),
-                    AgentDetailWidget(ability: agentUltimate),
+                    AgentDetailWidget(
+                      ability: agentUltimate,
+                      backgroundColor: Color(int.parse(
+                          agent.backgroundGradientColors[0],
+                          radix: 16)),
+                    ),
                   ],
                 )
               ],
@@ -161,9 +184,12 @@ class DetailScreen extends StatelessWidget {
 }
 
 class AgentDetailWidget extends StatelessWidget {
+  final Color backgroundColor;
+
   const AgentDetailWidget({
     super.key,
     required this.ability,
+    required this.backgroundColor,
   });
 
   final Ability ability;
@@ -171,8 +197,9 @@ class AgentDetailWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Image.network(
-        ability.displayIcon,
+      leading: CachedNetworkImage(
+        imageUrl: ability.displayIcon,
+        color: backgroundColor,
       ),
       title: Text(ability.displayName),
       subtitle: Text(
